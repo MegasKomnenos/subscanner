@@ -13,13 +13,13 @@ This will execute the subtitle scanner for every files contained within the samp
 More generally, the command should take the following form
 
 
-<script execution> <source> <destination> <option>
+;script execution; ;source; ;destination; ;option;
   
 
-<script execution> would be self-explanatory. Call the script however you see fit.
-<source> should contain the path to the source file(s). It can point to either a file, or a set of files using star asterik(*), or a directory. If it is pointing to a directory or a set of files, then <destination> must be a directory. If it is pointing to a directory, then every file within it will be processed.
-<destination> should contain the path to the destination file(s). It can point to either a file, or a directory. If it is pointing to a directory, then <source> must be either a directory or a set of files. If it is a directory, then the outputs will be placed within it while retaining the same name as its corresponding source.
-<option> is optional, and can be skipped. Currently, there is only one option, -clean , which cleans the destination directory before outputs are placed within it.
+;script execution; would be self-explanatory. Call the script however you see fit.
+;source; should contain the path to the source file(s). It can point to either a file, or a set of files using star asterik(*), or a directory. If it is pointing to a directory or a set of files, then ;destination; must be a directory. If it is pointing to a directory, then every file within it will be processed.
+;destination; should contain the path to the destination file(s). It can point to either a file, or a directory. If it is pointing to a directory, then ;source; must be either a directory or a set of files. If it is a directory, then the outputs will be placed within it while retaining the same name as its corresponding source.
+;option; is optional, and can be skipped. Currently, there is only one option, -clean , which cleans the destination directory before outputs are placed within it.
 
 # caveats
 If a source image does not contain any subtitles, then some messages will be printed onto stdin and its modified spectrum will be outputted instead.
