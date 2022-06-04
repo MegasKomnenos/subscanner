@@ -1,5 +1,5 @@
 # subscanner
-A python script that I wrote to extract a subtitle image for a given set of input. It requires opencv and numpy to operate. It operates mainly by utilizing fourier transform to detect certain traits of a subtitle inserted into an image. 
+A python script that I wrote to extract a subtitle image for a given set of input. It requires opencv and numpy to operate. It operates mainly by utilizing fourier transformation to detect certain traits of a subtitle inserted into an image. 
 
 # how to use
 To do a test run, open command shell with working directory set to the main subscanner directory, and type,
@@ -27,4 +27,4 @@ More generally, the command should take the following form
 ;option; is optional, and can be skipped. Currently, there is only one option, -clean , which cleans the destination directory before outputs are placed within it.
 
 # caveats
-If a source image does not contain any subtitles, then some messages will be printed onto stdin and its modified spectrum will be outputted instead.
+If a source image does not contain any subtitles, then some messages will be printed onto stdout and its modified spectrum will be outputted instead.
