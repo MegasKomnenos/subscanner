@@ -14,19 +14,24 @@ def scan(src):
     spectrum = cv.magnitude(dft[:,:,0], dft[:,:,1])
     spectrum = 20 * cv.log(spectrum + 1)
 
-    spectrum = np.reshape(np.sum(spectrum, 1), (spectrum.shape[0], 1))
+    processed = np.reshape(np.sum(spectrum, 1), (spectrum.shape[0], 1))
+    processed -= np.amin(processed)
+    processed /= np.amax(processed)
+    processed *= 255
+    processed = np.uint8(processed)
+
+    kernel = cv.getStructuringElement(cv.MORPH_RECT, (1, 5))
+
+    _, binary = cv.threshold(processed, 0, 255, cv.THRESH_BINARY+cv.THRESH_OTSU)
+    binary = cv.morphologyEx(binary, cv.MORPH_CLOSE, kernel, iterations=5)
+    binary = cv.morphologyEx(binary, cv.MORPH_OPEN, kernel, iterations=3)
+
     spectrum -= np.amin(spectrum)
     spectrum /= np.amax(spectrum)
     spectrum *= 255
     spectrum = np.uint8(spectrum)
 
-    kernel = cv.getStructuringElement(cv.MORPH_RECT, (1, 5))
-
-    _, binary = cv.threshold(spectrum, 0, 255, cv.THRESH_BINARY+cv.THRESH_OTSU)
-    binary = cv.morphologyEx(binary, cv.MORPH_CLOSE, kernel, iterations=5)
-    binary = cv.morphologyEx(binary, cv.MORPH_OPEN, kernel, iterations=3)
-
-    return binary, spectrum
+    return binary, spectrum, processed
 
 def find_rect(src):
     r = cv.findContours(src, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)[0]
@@ -46,23 +51,29 @@ def find_rect(src):
 
     return r
 
-def do_processing(src_path, dst_path):
+def do_processing(src_path, dst_path, test):
     src = cv.imread(src_path)
 
     assert(sum(src.shape) > 0)
 
     gray = cv.cvtColor(src, cv.COLOR_BGR2GRAY)
 
-    binary, spectrum = scan(gray)
+    binary, spectrum, processed = scan(gray)
 
     t = sum(binary > 0) / binary.shape[0]
 
+    if test:
+        name = dst_path.split('.')
+
+        if len(name) > 1:
+            name = '.'.join(name[:-1])
+
+        cv.imwrite(f'{name}_spectrum.jpg', spectrum)
+        cv.imwrite(f'{name}_processed.jpg', np.repeat(processed, gray.shape[1], 1))
+        cv.imwrite(f'{name}_binary.jpg', np.repeat(binary, gray.shape[1], 1))
+    
     if t > SUBTITLE_DETECTION_THRESHOLD:
         print(f"Failed to detect any subtitle from {src_path}")
-        print(f"Detected t value of {t}, it should not be higher than {SUBTITLE_DETECTION_THRESHOLD}")
-        print(f"Writing spectrum image to {dst_path}")
-
-        cv.imwrite(dst_path, np.repeat(spectrum, gray.shape[1], 1))
 
         return
 
@@ -73,7 +84,7 @@ def do_processing(src_path, dst_path):
     gray = gray[r[0][1]:r[1][1]+1,:]
     gray = cv.transpose(gray)
 
-    binary_cols, _ = scan(gray)
+    binary_cols, _, _ = scan(gray)
     binary_cols = cv.transpose(binary_cols)
     binary_cols = np.repeat(binary_cols, gray.shape[1], 0)
 
@@ -84,15 +95,25 @@ def do_processing(src_path, dst_path):
     cv.imwrite(dst_path, src[max(r[0][1]-5, 0):r[1][1]+5,max(r[0][0]-20, 0):r[2][0]+20,:])
 
 def main():
-    assert(len(sys.argv) == 3 or len(sys.argv) == 4)
+    assert(len(sys.argv) >= 3)
 
     src = sys.argv[1]
     dst = sys.argv[2]
 
-    if len(sys.argv) == 4 and sys.argv[3] == "-clean":
-        clean = True
+    options = set(sys.argv[3:])
+
+    if options:
+        if '--clean' in options:
+            clean = True
+        else:
+            clean = False
+        if '--test' in options:
+            test = True
+        else:
+            test = False
     else:
         clean = False
+        test = False
 
     assert(not((os.path.isdir(src) or '*' in src) and not os.path.isdir(dst)))
 
@@ -113,7 +134,7 @@ def main():
         dst = [dst]
     
     for i, s in enumerate(src):
-        do_processing(s, dst[i])
+        do_processing(s, dst[i], test)
 
 if __name__ == '__main__':
     main()
