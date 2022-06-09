@@ -95,7 +95,6 @@ def main():
         clean = False
 
     assert(not((os.path.isdir(src) or '*' in src) and not os.path.isdir(dst)))
-    assert(not(not os.path.isdir(src) and not '*' in src and os.path.isdir(dst)))
 
     if os.path.isdir(src):
         src = glob.glob(os.path.join(src, '*'))
