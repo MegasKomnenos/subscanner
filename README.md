@@ -25,11 +25,17 @@ More generally, the command should take the following form
 ;source; must be either a directory or a set of files. If it is a directory, then the outputs will be placed within it while retaining the same name as its corresponding source.
 
 ;options; is optional, and can be skipped. You can enable any combination of options that you'd like. Currently, list of possible options is as follows.
-1. --clean  :  Cleans the destination directory before outputs are placed within it. Does nothing if destination is not a directory.
-2. --test   :  Print outputs that are generated while subscanner is being run. Currently, the following outputs will be printed.
-  2.1. _spectrum  :  Initial spectrum image that was converted from the source.
-  2.2. _processed :  Spectrum image that has gone through multiple processing operations.
-  2.3. _binary    :  Binary image that was processed through Otsu's method from _processed.
+
+| option | explanation |
+| --- | --- |
+| --clean | Cleans the destination directory before outputs are placed within it. Does nothing if destination is not a directory. |
+| --test | Print intermediate datas that are generated while subscanner is being run. Currently, the following outputs will be printed.  |
+
+| output | explanation |
+| --- | --- |
+| _spectrum | Initial spectrum image that was converted from the source. |
+| _processed | Spectrum image that has gone through multiple processing operations. |
+| _binary | Binary image that was processed through Otsu's method from _processed. |
   
 # caveats
 If a source image does not contain any subtitles, then no further operations will be made.
