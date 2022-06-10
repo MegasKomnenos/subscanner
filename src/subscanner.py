@@ -68,9 +68,10 @@ def do_processing(src_path, dst_path, test):
         if len(name) > 1:
             name = '.'.join(name[:-1])
 
-        cv.imwrite(f'{name}_spectrum.jpg', spectrum)
-        cv.imwrite(f'{name}_processed.jpg', np.repeat(processed, gray.shape[1], 1))
-        cv.imwrite(f'{name}_binary.jpg', np.repeat(binary, gray.shape[1], 1))
+        cv.imwrite(f'{name}_1original.jpg', src)
+        cv.imwrite(f'{name}_2spectrum.jpg', spectrum)
+        cv.imwrite(f'{name}_3processed.jpg', np.repeat(processed, gray.shape[1], 1))
+        cv.imwrite(f'{name}_4binary.jpg', np.repeat(binary, gray.shape[1], 1))
     
     if t > SUBTITLE_DETECTION_THRESHOLD:
         print(f"Failed to detect any subtitle from {src_path}")
