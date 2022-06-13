@@ -33,10 +33,13 @@ More generally, the command should take the following form
 
 | output | explanation |
 | --- | --- |
-| _1original | Original source image. |
-| _2spectrum | Initial spectrum image that was converted from the source. |
-| _3processed | Spectrum image that has gone through multiple processing operations. |
-| _4binary | Binary image that was processed through Otsu's method from _processed. |
+| _1r1original | Original source image. |
+| _1r2spectrum | Initial spectrum image that was converted from source. Row-wise. |
+| _1r3processed | Spectrum image that has gone through multiple processing operations. Row-wise. |
+| _1r4binary | Binary image that was processed through Otsu's method from _1r3processed. Row-wise. |
+| _2c1spectrum | Spectrum image that was converted from a section in source. Column-wise. |
+| _2c2processed | Spectrum image that has gone through multiple processing operations. Column-wise. |
+| _2c3binary | Binary image that was processed through Otsu's method from _2c2processed. Column-wise. |
   
 # caveats
 If a source image does not contain any subtitles, then no further operations will be made.
