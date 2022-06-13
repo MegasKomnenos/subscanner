@@ -96,19 +96,27 @@ def do_processing(src_path, dst_path, test):
     binary[r[0][1]:r[1][1]+1,:] = binary_cols
 
     if test:
+        src_tmp = np.zeros_like(src)
         spectrum_tmp = np.zeros_like(spectrum)
         processed_tmp = np.zeros_like(processed)
-
+        
+        src_tmp[r[0][1]:r[1][1]+1,:] = src[r[0][1]:r[1][1]+1,:]
         spectrum_tmp[r[0][1]:r[1][1]+1,:] = cv.transpose(spectrum_cols)
         processed_tmp[r[0][1]:r[1][1]+1,:] = np.repeat(cv.transpose(processed_cols), gray.shape[1], 0)
 
-        cv.imwrite(f'{name}_2c1spectrum.jpg', spectrum_tmp)
-        cv.imwrite(f'{name}_2c2processed.jpg', processed_tmp)
-        cv.imwrite(f'{name}_2c3binary.jpg', binary)
+        cv.imwrite(f'{name}_2c1original.jpg', src_tmp)
+        cv.imwrite(f'{name}_2c2spectrum.jpg', spectrum_tmp)
+        cv.imwrite(f'{name}_2c3processed.jpg', processed_tmp)
+        cv.imwrite(f'{name}_2c4binary.jpg', binary)
     
     r = find_rect(binary)
 
-    cv.imwrite(dst_path, src[max(r[0][1]-5, 0):r[1][1]+5,max(r[0][0]-20, 0):r[2][0]+20,:])
+    if test:
+        dst_tmp = np.zeros_like(src)
+        dst_tmp[max(r[0][1]-5, 0):r[1][1]+5,max(r[0][0]-20, 0):r[2][0]+20,:] = src[max(r[0][1]-5, 0):r[1][1]+5,max(r[0][0]-20, 0):r[2][0]+20,:]
+        cv.imwrite(f'{name}_3out.jpg', dst_tmp)
+    else:
+        cv.imwrite(dst_path, src[max(r[0][1]-5, 0):r[1][1]+5,max(r[0][0]-20, 0):r[2][0]+20,:])
 
 def main():
     assert(len(sys.argv) >= 3)
