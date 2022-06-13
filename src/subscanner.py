@@ -62,34 +62,49 @@ def do_processing(src_path, dst_path, test):
 
     t = sum(binary > 0) / binary.shape[0]
 
+    binary = np.repeat(binary, gray.shape[1], 1)
+
     if test:
         name = dst_path.split('.')
 
         if len(name) > 1:
             name = '.'.join(name[:-1])
 
-        cv.imwrite(f'{name}_1original.jpg', src)
-        cv.imwrite(f'{name}_2spectrum.jpg', spectrum)
-        cv.imwrite(f'{name}_3processed.jpg', np.repeat(processed, gray.shape[1], 1))
-        cv.imwrite(f'{name}_4binary.jpg', np.repeat(binary, gray.shape[1], 1))
+        processed = np.repeat(processed, gray.shape[1], 1)
+
+        cv.imwrite(f'{name}_1r1original.jpg', src)
+        cv.imwrite(f'{name}_1r2spectrum.jpg', spectrum)
+        cv.imwrite(f'{name}_1r3processed.jpg', processed)
+        cv.imwrite(f'{name}_1r4binary.jpg', binary)
     
     if t > SUBTITLE_DETECTION_THRESHOLD:
         print(f"Failed to detect any subtitle from {src_path}")
 
         return
 
-    binary = np.repeat(binary, gray.shape[1], 1)
-
     r = find_rect(binary)
 
     gray = gray[r[0][1]:r[1][1]+1,:]
     gray = cv.transpose(gray)
 
-    binary_cols, _, _ = scan(gray)
+    binary_cols, spectrum_cols, processed_cols = scan(gray)
+
     binary_cols = cv.transpose(binary_cols)
     binary_cols = np.repeat(binary_cols, gray.shape[1], 0)
 
+
     binary[r[0][1]:r[1][1]+1,:] = binary_cols
+
+    if test:
+        spectrum_tmp = np.zeros_like(spectrum)
+        processed_tmp = np.zeros_like(processed)
+
+        spectrum_tmp[r[0][1]:r[1][1]+1,:] = cv.transpose(spectrum_cols)
+        processed_tmp[r[0][1]:r[1][1]+1,:] = np.repeat(cv.transpose(processed_cols), gray.shape[1], 0)
+
+        cv.imwrite(f'{name}_2c1spectrum.jpg', spectrum_tmp)
+        cv.imwrite(f'{name}_2c2processed.jpg', processed_tmp)
+        cv.imwrite(f'{name}_2c3binary.jpg', binary)
     
     r = find_rect(binary)
 
