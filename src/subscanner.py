@@ -92,7 +92,7 @@ def do_processing(src_path, dst_path, test):
     binary_cols = cv.transpose(binary_cols)
     binary_cols = np.repeat(binary_cols, gray.shape[1], 0)
 
-
+    binary[:,:] = 0
     binary[r[0][1]:r[1][1]+1,:] = binary_cols
 
     if test:
